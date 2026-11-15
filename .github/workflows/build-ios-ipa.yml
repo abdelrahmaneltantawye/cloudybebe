@@ -14,6 +14,9 @@ concurrency:
   group: ${{ github.workflow }}-${{ github.ref }}
   cancel-in-progress: true
 
+permissions:
+  contents: write
+
 jobs:
   build_ipa:
     name: Build & Package iOS IPA
@@ -111,3 +114,18 @@ jobs:
           path: mobile/CloudyBebe.ipa
           if-no-files-found: error
           retention-days: 14
+
+      - name: Publish to GitHub Release
+        uses: softprops/action-gh-release@v2
+        if: github.ref == 'refs/heads/main' || github.event_name == 'workflow_dispatch'
+        with:
+          tag_name: latest
+          name: "CloudyBebe iOS App (.ipa) Latest"
+          files: mobile/CloudyBebe.ipa
+          draft: false
+          prerelease: false
+          body: |
+            ### CloudyBebe iOS App (.ipa)
+            Direct 1-click download link for iOS sideloading (Sideloadly, AltStore, TrollStore, Scarlet, etc.)
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}

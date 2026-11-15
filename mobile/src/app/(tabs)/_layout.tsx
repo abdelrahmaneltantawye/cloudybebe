@@ -1,6 +1,7 @@
-import { Platform, Text, View } from 'react-native';
+import { Platform, Text } from 'react-native';
 import { Tabs } from 'expo-router';
 import { Ionicons } from '@expo/vector-icons';
+import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import { useThemeContext } from '@/design-system';
 import { useShop } from '@/state/shop';
 import { haptics } from '@/lib/haptics';
@@ -13,10 +14,13 @@ const TABS = [
 ] as const;
 
 export default function TabsLayout() {
+  const insets = useSafeAreaInsets();
   const { count, saved } = useShop();
   const savedCount = saved.length;
   const { theme: t, colorScheme } = useThemeContext();
   const isDark = colorScheme === 'dark';
+
+  const bottomInset = Platform.OS === 'ios' ? Math.max(insets.bottom, 14) : 8;
 
   return (
     <Tabs
@@ -26,28 +30,19 @@ export default function TabsLayout() {
         animation: 'none',
         sceneStyle: { backgroundColor: t.colors.background },
         tabBarActiveTintColor: t.colors.primary,
-        tabBarInactiveTintColor: isDark ? '#A0A5A2' : t.colors.navSlate,
+        tabBarInactiveTintColor: isDark ? '#8E8E93' : '#8E8E93',
         tabBarStyle: {
-          position: 'absolute',
-          bottom: Platform.OS === 'ios' ? 24 : 16,
-          left: 16,
-          right: 16,
-          maxWidth: 460,
-          marginHorizontal: 'auto',
-          alignSelf: 'center',
-          height: 64,
-          borderRadius: 32,
-          backgroundColor: isDark ? 'rgba(30, 30, 30, 0.95)' : 'rgba(255, 255, 255, 0.97)',
-          borderWidth: 1,
-          borderColor: isDark ? 'rgba(255, 255, 255, 0.1)' : 'rgba(47, 58, 50, 0.08)',
+          backgroundColor: isDark ? '#141416' : '#FFFFFF',
+          borderTopWidth: 0.5,
+          borderTopColor: isDark ? 'rgba(255, 255, 255, 0.12)' : 'rgba(0, 0, 0, 0.08)',
+          height: 52 + bottomInset,
           paddingTop: 6,
-          paddingBottom: 6,
-          paddingHorizontal: 8,
-          shadowColor: '#2F3A32',
-          shadowOffset: { width: 0, height: 10 },
-          shadowOpacity: isDark ? 0.35 : 0.14,
-          shadowRadius: 20,
-          elevation: 12,
+          paddingBottom: bottomInset,
+          elevation: 8,
+          shadowColor: '#000000',
+          shadowOffset: { width: 0, height: -3 },
+          shadowOpacity: isDark ? 0.3 : 0.06,
+          shadowRadius: 6,
         },
       }}
     >
@@ -80,30 +75,19 @@ export default function TabsLayout() {
               lineHeight: 16,
             },
             tabBarIcon: ({ focused }) => (
-              <View
-                style={{
-                  alignItems: 'center',
-                  justifyContent: 'center',
-                  paddingHorizontal: 16,
-                  paddingVertical: 4,
-                  borderRadius: 16,
-                  backgroundColor: focused ? t.colors.primarySoft : 'transparent',
-                }}
-              >
-                <Ionicons
-                  name={focused ? tab.activeIcon : tab.inactiveIcon}
-                  color={focused ? t.colors.primary : isDark ? '#A0A5A2' : t.colors.navSlate}
-                  size={21}
-                />
-              </View>
+              <Ionicons
+                name={focused ? tab.activeIcon : tab.inactiveIcon}
+                color={focused ? t.colors.primary : isDark ? '#8E8E93' : '#8E8E93'}
+                size={23}
+              />
             ),
             tabBarLabel: ({ focused, children }) => (
               <Text
                 style={{
                   fontFamily: focused ? t.font.strong : t.font.body,
-                  fontSize: 10.5,
-                  fontWeight: focused ? '700' : '600',
-                  color: focused ? t.colors.primary : t.colors.muted,
+                  fontSize: 10,
+                  fontWeight: focused ? '700' : '500',
+                  color: focused ? t.colors.primary : isDark ? '#8E8E93' : '#8E8E93',
                   marginTop: 2,
                 }}
               >

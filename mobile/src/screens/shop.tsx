@@ -113,9 +113,9 @@ function ShopCollection({ category, initialSearch }: { category: string; initial
       windowSize={5}
       removeClippedSubviews={Platform.OS !== 'web'}
       keyboardShouldPersistTaps="handled"
-      contentInsetAdjustmentBehavior="automatic"
+      contentInsetAdjustmentBehavior="never"
       contentContainerStyle={{
-        paddingTop: insets.top,
+        paddingTop: insets.top + (Platform.OS === 'ios' ? 4 : t.space.sm),
         paddingHorizontal: t.space.lg,
         paddingBottom: 96,
         gap: t.space.lg,

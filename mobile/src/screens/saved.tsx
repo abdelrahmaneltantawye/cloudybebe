@@ -1,6 +1,7 @@
 import { FlatList, Platform, View } from 'react-native';
 import Ionicons from '@expo/vector-icons/Ionicons';
 import { router } from 'expo-router';
+import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import { useShop } from '@/state/shop';
 import { Button, Copy, Status, Title } from '@/components/ui';
 import { ProductCard } from '@/components/product-card';
@@ -8,6 +9,7 @@ import { useTheme } from '@/design-system';
 
 export default function Saved() {
   const t = useTheme();
+  const insets = useSafeAreaInsets();
   const { saved, ready, storageError } = useShop();
 
   return (
@@ -20,9 +22,10 @@ export default function Saved() {
       maxToRenderPerBatch={10}
       windowSize={5}
       removeClippedSubviews={Platform.OS !== 'web'}
-      contentInsetAdjustmentBehavior="automatic"
+      contentInsetAdjustmentBehavior="never"
       contentContainerStyle={{
-        padding: t.space.lg,
+        paddingTop: insets.top + (Platform.OS === 'ios' ? 12 : t.space.md),
+        paddingHorizontal: t.space.lg,
         paddingBottom: 90,
         gap: t.space.lg,
         maxWidth: 800,

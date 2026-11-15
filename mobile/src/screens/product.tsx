@@ -5,7 +5,7 @@ import { Image } from 'expo-image';
 import Ionicons from '@expo/vector-icons/Ionicons';
 import { router, useLocalSearchParams } from 'expo-router';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
-import { Accordion, BrandHeader, Button, Copy, IconButton, QuantityStepper, Status, Title } from '@/components/ui';
+import { Accordion, Button, Copy, IconButton, QuantityStepper, Status, Title } from '@/components/ui';
 import { useResource } from '@/hooks/use-resource';
 import { type Product, money, plainText, storeGet } from '@/lib/store';
 import { useShop } from '@/state/shop';
@@ -120,6 +120,7 @@ function ProductDetails({ product: p }: { product: Product }) {
         scrollEventThrottle={16}
         contentInsetAdjustmentBehavior="automatic"
         contentContainerStyle={{
+          paddingTop: t.space.sm,
           paddingHorizontal: t.space.lg,
           paddingBottom: showStickyCta ? 120 : Math.max(insets.bottom, 96),
           maxWidth: 800,
@@ -127,7 +128,6 @@ function ProductDetails({ product: p }: { product: Product }) {
           alignSelf: 'center',
         }}
       >
-        <BrandHeader />
       <View style={{ flexDirection: 'row', alignItems: 'center', gap: t.space.xs, paddingBottom: t.space.sm }}>
         <Pressable accessibilityRole="button" onPress={() => router.push('/shop')} style={{ minHeight: 44, justifyContent: 'center' }}>
           <Copy style={{ color: t.colors.muted, fontSize: t.type.caption }}>Shop</Copy>

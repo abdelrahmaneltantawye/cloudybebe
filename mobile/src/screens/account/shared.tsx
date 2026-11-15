@@ -23,7 +23,7 @@ export function Page({ title, subtitle, children, tab = false }: { title: string
 
   return <ScrollView style={{ flex: 1, backgroundColor: t.colors.surface }} contentContainerStyle={{ paddingHorizontal: t.space.lg, paddingTop: t.space.lg + (tab ? insets.top : 0), paddingBottom: tab ? 96 + insets.bottom : 50, gap: 20 }} contentInsetAdjustmentBehavior={tab ? 'never' : 'automatic'} keyboardShouldPersistTaps="handled" automaticallyAdjustKeyboardInsets>
     <Stack.Screen options={{ title, headerShown: !tab }} />
-    {tab ? <Image source={logoSource} contentFit="contain" style={{ width: 191, height: 48, alignSelf: 'flex-start' }} accessibilityLabel="CloudyBebe" /> : null}
+    {tab ? <Image source={logoSource} contentFit="contain" style={{ width: 175, height: 44, alignSelf: 'center' }} accessibilityLabel="CloudyBebe" /> : null}
     <View style={{ gap: 8 }}><Title>{title}</Title>{subtitle ? <Copy style={{ color: t.colors.muted }}>{subtitle}</Copy> : null}</View>
     {children}
   </ScrollView>;

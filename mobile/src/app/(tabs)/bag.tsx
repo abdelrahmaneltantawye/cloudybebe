@@ -24,9 +24,9 @@ export default function Bag() {
       maxToRenderPerBatch={10}
       windowSize={5}
       removeClippedSubviews={Platform.OS !== 'web'}
-      contentInsetAdjustmentBehavior="automatic"
+      contentInsetAdjustmentBehavior="never"
       contentContainerStyle={{
-        paddingTop: insets.top,
+        paddingTop: insets.top + (Platform.OS === 'ios' ? 4 : t.space.sm),
         paddingHorizontal: t.space.lg,
         paddingBottom: 96,
         maxWidth: 800,

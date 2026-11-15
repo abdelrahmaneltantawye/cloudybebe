@@ -58,9 +58,9 @@ export default function Discover() {
       maxToRenderPerBatch={6}
       windowSize={5}
       removeClippedSubviews={Platform.OS !== 'web'}
-      contentInsetAdjustmentBehavior="automatic"
+      contentInsetAdjustmentBehavior="never"
       contentContainerStyle={{
-        paddingTop: insets.top,
+        paddingTop: insets.top + (Platform.OS === 'ios' ? 4 : t.space.sm),
         paddingHorizontal: t.space.lg,
         paddingBottom: 96,
         gap: t.space.lg,

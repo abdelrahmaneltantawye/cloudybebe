@@ -195,18 +195,19 @@ export function BrandHeader() {
       style={{
         alignItems: 'center',
         justifyContent: 'center',
-        paddingVertical: t.space.sm,
+        paddingTop: 2,
+        paddingBottom: t.space.xs,
       }}
     >
       <Pressable
         accessibilityRole="button"
         accessibilityLabel="CloudyBebe home"
         onPress={() => router.push('/')}
-        style={{ minHeight: 48, justifyContent: 'center', alignItems: 'center' }}
+        style={{ justifyContent: 'center', alignItems: 'center' }}
       >
         <Image
           source={logoSource}
-          style={{ width: 195, maxWidth: '100%', height: 49 }}
+          style={{ width: 175, maxWidth: '100%', height: 44 }}
           contentFit="contain"
           accessibilityLabel="CloudyBebe"
         />

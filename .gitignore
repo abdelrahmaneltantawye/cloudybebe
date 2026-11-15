@@ -16,4 +16,6 @@ work/registry-lab/*.sql
 work/registry-lab/*.gz
 tmp/
 *.log
+*.ipa
+*.zip
 .DS_Store
