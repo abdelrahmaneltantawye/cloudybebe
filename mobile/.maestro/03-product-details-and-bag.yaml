@@ -1,0 +1,14 @@
+appId: com.cloudybebe.app
+---
+- launchApp
+- scroll
+- tapOn:
+    index: 0
+    point: "25%,70%"
+- assertVisible: "From |\\$[0-9]+"
+- tapOn: "Add to bag"
+- assertVisible: ".*added to your bag.*"
+- tapOn: "Bag"
+- assertVisible: "Your shopping bag"
+- assertVisible: "Order summary"
+- assertVisible: "Continue to checkout  →"

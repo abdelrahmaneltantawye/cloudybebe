@@ -1,0 +1,12 @@
+appId: com.cloudybebe.app
+---
+- launchApp
+- tapOn: "Registry"
+- assertVisible: "Baby Registry"
+- assertVisible: "Find a registry"
+- tapOn: "Find a registry"
+- assertVisible: "Search registries"
+- tapOn:
+    text: "Parent or baby name…"
+- inputText: "Maya"
+- pressKey: Enter

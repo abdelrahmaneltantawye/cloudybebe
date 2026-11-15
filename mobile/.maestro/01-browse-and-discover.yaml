@@ -1,0 +1,11 @@
+appId: com.cloudybebe.app
+---
+- launchApp
+- assertVisible: "CloudyBebe home"
+- assertVisible: "Thoughtful finds for their little world."
+- assertVisible: "Shop by category"
+- assertVisible: "Plush Toys"
+- assertVisible: "Gift Sets"
+- assertVisible: "Blankets"
+- scroll
+- assertVisible: "Soft little favourites"

@@ -1,0 +1,11 @@
+appId: com.cloudybebe.app
+---
+- launchApp
+- tapOn: "Account"
+- assertVisible: "Your account"
+- assertVisible: "Welcome to CloudyBebe"
+- tapOn: "Sign in"
+- assertVisible: "Email address"
+- assertVisible: "Password"
+- tapOn: "Sign in"
+- assertVisible: "Enter your email address and password."

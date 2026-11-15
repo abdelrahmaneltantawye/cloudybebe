@@ -1,0 +1,113 @@
+name: Build iOS IPA (Free / Sideloadable)
+
+on:
+  workflow_dispatch:
+  push:
+    branches:
+      - master
+      - main
+    paths:
+      - 'mobile/**'
+      - '.github/workflows/build-ios-ipa.yml'
+
+concurrency:
+  group: ${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  build_ipa:
+    name: Build & Package iOS IPA
+    runs-on: macos-14
+    timeout-minutes: 60
+
+    defaults:
+      run:
+        working-directory: mobile
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Setup Node.js 20
+        uses: actions/setup-node@v4
+        with:
+          node-version: 20
+          cache: 'npm'
+          cache-dependency-path: mobile/package-lock.json
+
+      - name: Install dependencies
+        run: npm install --legacy-peer-deps
+
+      - name: Prebuild iOS Native Project
+        run: npx expo prebuild --platform ios --clean
+
+      - name: Configure CocoaPods & Disable Signing on Pods
+        run: |
+          ruby -e '
+            podfile = "ios/Podfile"
+            if File.exist?(podfile)
+              content = File.read(podfile)
+              patch = %Q{
+                  installer.pods_project.targets.each do |target|
+                    target.build_configurations.each do |config|
+                      config.build_settings["CODE_SIGNING_ALLOWED"] = "NO"
+                      config.build_settings["CODE_SIGNING_REQUIRED"] = "NO"
+                      config.build_settings["CODE_SIGN_IDENTITY"] = ""
+                      config.build_settings["EXPANDED_CODE_SIGN_IDENTITY"] = ""
+                    end
+                  end
+              }
+              if content.include?("post_install do |installer|")
+                content.sub!("post_install do |installer|", "post_install do |installer|\n" + patch)
+                File.write(podfile, content)
+                puts "Successfully patched Podfile post_install block."
+              else
+                puts "Warning: post_install block not found in Podfile."
+              end
+            end
+          '
+          cd ios
+          pod install
+          cd ..
+
+      - name: Build iOS App (.app) without Code Signing
+        run: |
+          xcodebuild build \
+            -workspace ios/CloudyBebe.xcworkspace \
+            -scheme CloudyBebe \
+            -configuration Release \
+            -destination 'generic/platform=iOS' \
+            -derivedDataPath ios/build \
+            CODE_SIGNING_ALLOWED=NO \
+            CODE_SIGNING_REQUIRED=NO \
+            CODE_SIGN_IDENTITY="" \
+            CODE_SIGN_STYLE=Manual \
+            PROVISIONING_PROFILE_SPECIFIER=""
+
+      - name: Package .app into .ipa
+        run: |
+          APP_PATH="ios/build/Build/Products/Release-iphoneos/CloudyBebe.app"
+          if [ ! -d "$APP_PATH" ]; then
+            echo "Error: $APP_PATH was not found!"
+            find ios/build -name "*.app"
+            exit 1
+          fi
+
+          echo "Found app bundle at: $APP_PATH"
+          mkdir -p ipa_build/Payload
+          cp -R "$APP_PATH" ipa_build/Payload/
+          cd ipa_build
+          zip -qr ../CloudyBebe.ipa Payload
+          cd ..
+          rm -rf ipa_build
+
+          echo "IPA successfully created:"
+          ls -lh CloudyBebe.ipa
+
+      - name: Upload IPA Artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: CloudyBebe-iOS-IPA
+          path: mobile/CloudyBebe.ipa
+          if-no-files-found: error
+          retention-days: 14

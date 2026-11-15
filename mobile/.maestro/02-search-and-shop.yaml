@@ -1,0 +1,16 @@
+appId: com.cloudybebe.app
+---
+- launchApp
+- tapOn: "Shop"
+- assertVisible: "Shop the collection"
+- tapOn:
+    text: "Search products…"
+- inputText: "Plush"
+- pressKey: Enter
+- assertVisible: "Results for “Plush”"
+- tapOn: "Filter & sort"
+- assertVisible: "Sort by"
+- assertVisible: "Price (USD)"
+- assertVisible: "Availability"
+- tapOn: "Popular"
+- tapOn: "Filter & sort"
