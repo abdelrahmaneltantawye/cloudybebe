@@ -1,6 +1,7 @@
 import { useCallback, useEffect, useRef, useState } from 'react';
-import { AppState, Platform, View } from 'react-native';
-import { router } from 'expo-router';
+import { AppState, Platform, Pressable, View } from 'react-native';
+import { router, Stack } from 'expo-router';
+import Ionicons from '@expo/vector-icons/Ionicons';
 import { StoreBrowser } from '@/components/store-browser';
 import { Button, Copy, Status, Title } from '@/components/ui';
 import { validateTicket, receiptConfirmed, isCheckoutReturn, type CheckoutTicket, type CheckoutReceipt, type PendingCheckout } from '@/lib/checkout';
@@ -17,11 +18,13 @@ const HIDE_CHROME_SCRIPT = `
     if (document.getElementById('cloudybebe-native-style')) return;
     var style = document.createElement('style');
     style.id = 'cloudybebe-native-style';
-    style.innerHTML = 'header, footer, #masthead, #colophon, .site-header, .site-footer, .elementor-location-header, .elementor-location-footer, .top-bar, .announcement-bar, #wpadminbar, .mobile-nav, .storefront-handheld-footer-bar { display: none !important; visibility: hidden !important; height: 0 !important; overflow: hidden !important; } body, html, #page, #content { padding-top: 0 !important; margin-top: 0 !important; }';
+    style.innerHTML = 'header, footer, #masthead, #colophon, .whb-header, .whb-main-header, .whb-sticky-header, .woodmart-header, .header-mobile, .footer-container, .main-footer, .woodmart-footer, .footer-sidebar, .woodmart-toolbar, .whb-toolbar, .site-header, .site-footer, .elementor-location-header, .elementor-location-footer, .top-bar, .announcement-bar, #wpadminbar, .mobile-nav, .storefront-handheld-footer-bar, .woocommerce-store-notice { display: none !important; visibility: hidden !important; height: 0 !important; overflow: hidden !important; } body, html, #page, #content, .main-page-wrapper { padding-top: 0 !important; margin-top: 0 !important; padding-bottom: 24px !important; } .woocommerce-checkout { padding: 8px 12px !important; }';
     document.head.appendChild(style);
   }
   inject();
   document.addEventListener('DOMContentLoaded', inject);
+  setTimeout(inject, 400);
+  setTimeout(inject, 1200);
 })();
 true;
 `;
@@ -162,6 +165,22 @@ export default function Checkout() {
 
   return (
     <View style={{ flex: 1, backgroundColor: t.colors.background }}>
+      <Stack.Screen
+        options={{
+          title: 'Secure Checkout',
+          presentation: 'modal',
+          headerLeft: () => (
+            <Pressable
+              accessibilityRole="button"
+              accessibilityLabel="Close checkout"
+              onPress={() => router.back()}
+              style={{ paddingHorizontal: 8, paddingVertical: 4, minHeight: 44, justifyContent: 'center' }}
+            >
+              <Ionicons name="close" size={24} color={t.colors.ink} />
+            </Pressable>
+          ),
+        }}
+      />
       {showHeaderNotice ? (
         <View style={{ paddingHorizontal: t.space.lg, paddingVertical: t.space.md, gap: t.space.sm, borderBottomWidth: 1, borderColor: t.colors.border }}>
           {error ? <Copy accessibilityRole="alert" style={{ color: t.colors.error }}>{error}</Copy> : null}
