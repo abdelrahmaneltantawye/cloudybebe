@@ -47,7 +47,7 @@ function AppNavigation() {
         <Stack.Screen name="registry/index" options={{ title: 'Baby Registry', headerBackTitle: 'Back' }} />
         <Stack.Screen name="product/[id]" options={{ title: 'Product details', headerBackTitle: 'Back' }} />
         <Stack.Screen name="saved" options={{ title: 'Wishlist', headerBackTitle: 'Back' }} />
-        <Stack.Screen name="checkout" options={{ title: 'Secure checkout', presentation: 'modal' }} />
+        <Stack.Screen name="checkout" options={{ title: 'Checkout', headerBackTitle: 'Back' }} />
         <Stack.Screen name="website" options={{ title: 'CloudyBebe', presentation: 'modal' }} />
         <Stack.Screen name="account/notifications" options={{ title: 'Push Notifications', headerBackTitle: 'Back' }} />
       </Stack>
