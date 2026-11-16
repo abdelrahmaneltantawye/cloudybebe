@@ -1,0 +1,257 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>CloudyBébé - Push Notification Center</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Lexend:wght@400;500;600;700&display=swap" rel="stylesheet">
+  <style>
+    :root {
+      --primary: #76867A;
+      --primary-hover: #5F6E63;
+      --bg: #F7F5F2;
+      --surface: #FFFFFF;
+      --text: #1E1E22;
+      --muted: #6B7280;
+      --border: #E5E7EB;
+      --success: #10B981;
+      --error: #EF4444;
+    }
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+    body {
+      font-family: 'Lexend', -apple-system, BlinkMacSystemFont, sans-serif;
+      background-color: var(--bg);
+      color: var(--text);
+      min-height: 100vh;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      padding: 24px;
+    }
+    .card {
+      background: var(--surface);
+      border-radius: 16px;
+      padding: 32px;
+      max-width: 540px;
+      width: 100%;
+      box-shadow: 0 10px 30px rgba(0,0,0,0.06);
+      border: 1px solid var(--border);
+    }
+    .header {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      margin-bottom: 24px;
+      border-bottom: 1px solid var(--border);
+      padding-bottom: 20px;
+    }
+    .logo-badge {
+      width: 44px;
+      height: 44px;
+      border-radius: 12px;
+      background: rgba(118, 134, 122, 0.15);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 22px;
+    }
+    h1 { font-size: 20px; font-weight: 700; color: var(--text); }
+    p.subtitle { font-size: 13px; color: var(--muted); margin-top: 2px; }
+    .form-group {
+      margin-bottom: 18px;
+    }
+    label {
+      display: block;
+      font-size: 13px;
+      font-weight: 600;
+      margin-bottom: 6px;
+      color: var(--text);
+    }
+    input, textarea, select {
+      width: 100%;
+      padding: 12px 14px;
+      border: 1px solid var(--border);
+      border-radius: 8px;
+      font-family: inherit;
+      font-size: 14px;
+      outline: none;
+      transition: border-color 0.2s;
+    }
+    input:focus, textarea:focus, select:focus {
+      border-color: var(--primary);
+      box-shadow: 0 0 0 3px rgba(118, 134, 122, 0.15);
+    }
+    textarea { resize: vertical; min-height: 80px; }
+    .btn {
+      width: 100%;
+      padding: 14px;
+      background: var(--primary);
+      color: #fff;
+      border: none;
+      border-radius: 10px;
+      font-size: 15px;
+      font-weight: 600;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 8px;
+      transition: background-color 0.2s;
+      margin-top: 10px;
+    }
+    .btn:hover { background: var(--primary-hover); }
+    .btn:disabled { opacity: 0.6; cursor: not-allowed; }
+    .status {
+      margin-top: 20px;
+      padding: 12px 16px;
+      border-radius: 8px;
+      font-size: 13px;
+      display: none;
+    }
+    .status.success {
+      display: block;
+      background: rgba(16, 185, 129, 0.1);
+      color: #065F46;
+      border: 1px solid rgba(16, 185, 129, 0.2);
+    }
+    .status.error {
+      display: block;
+      background: rgba(239, 68, 68, 0.1);
+      color: #991B1B;
+      border: 1px solid rgba(239, 68, 68, 0.2);
+    }
+    .quick-tags {
+      display: flex;
+      gap: 8px;
+      margin-top: 6px;
+    }
+    .quick-tag {
+      background: var(--bg);
+      border: 1px solid var(--border);
+      border-radius: 6px;
+      padding: 4px 8px;
+      font-size: 11px;
+      cursor: pointer;
+      color: var(--muted);
+    }
+    .quick-tag:hover {
+      border-color: var(--primary);
+      color: var(--primary);
+    }
+  </style>
+</head>
+<body>
+  <div class="card">
+    <div class="header">
+      <div class="logo-badge">☁️</div>
+      <div>
+        <h1>CloudyBébé Push Center</h1>
+        <p class="subtitle">Broadcast instant notifications to iOS customers</p>
+      </div>
+    </div>
+
+    <form id="pushForm">
+      <div class="form-group">
+        <label for="token">Target Push Token (or leave blank for all registered)</label>
+        <input type="text" id="token" placeholder="ExponentPushToken[xxxxxxxxxxxx] (Optional)">
+        <p style="font-size: 11px; color: var(--muted); margin-top: 4px;">
+          Leave empty to broadcast, or enter a specific token to test a single iPhone.
+        </p>
+      </div>
+
+      <div class="form-group">
+        <label for="title">Notification Title</label>
+        <input type="text" id="title" placeholder="e.g. 🧸 Special Weekend Gift" required>
+      </div>
+
+      <div class="form-group">
+        <label for="body">Message Body</label>
+        <textarea id="body" placeholder="e.g. Discover our latest organic bamboo blankets and get 15% off today." required></textarea>
+      </div>
+
+      <div class="form-group">
+        <label for="route">Open Screen on Tap</label>
+        <input type="text" id="route" value="/shop">
+        <div class="quick-tags">
+          <span class="quick-tag" onclick="document.getElementById('route').value = '/shop'">Shop All</span>
+          <span class="quick-tag" onclick="document.getElementById('route').value = '/orders'">My Orders</span>
+          <span class="quick-tag" onclick="document.getElementById('route').value = '/registry'">Baby Registry</span>
+        </div>
+      </div>
+
+      <button type="submit" class="btn" id="sendBtn">
+        <span>🚀 Send Push Notification</span>
+      </button>
+
+      <div class="status" id="statusBox"></div>
+    </form>
+  </div>
+
+  <script>
+    const form = document.getElementById('pushForm');
+    const sendBtn = document.getElementById('sendBtn');
+    const statusBox = document.getElementById('statusBox');
+
+    form.addEventListener('submit', async (e) => {
+      e.preventDefault();
+      sendBtn.disabled = true;
+      sendBtn.textContent = 'Sending...';
+      statusBox.className = 'status';
+      statusBox.style.display = 'none';
+
+      const title = document.getElementById('title').value.trim();
+      const body = document.getElementById('body').value.trim();
+      const route = document.getElementById('route').value.trim() || '/shop';
+      let token = document.getElementById('token').value.trim();
+
+      // If no token specified, use fallback or prompt
+      if (!token) {
+        token = localStorage.getItem('last_saved_token') || '';
+      }
+
+      const message = {
+        to: token || undefined,
+        sound: 'default',
+        title: title,
+        body: body,
+        data: { route: route },
+        badge: 1
+      };
+
+      try {
+        if (!message.to) {
+          throw new Error('Please enter an Expo Push Token or test from inside the app.');
+        }
+
+        const res = await fetch('https://exp.host/--/api/v2/push/send', {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+            'Accept': 'application/json',
+          },
+          body: JSON.stringify(message)
+        });
+
+        const data = await res.json();
+        if (res.ok) {
+          statusBox.textContent = '✅ Notification sent successfully! Check the device.';
+          statusBox.className = 'status success';
+          if (token) localStorage.setItem('last_saved_token', token);
+        } else {
+          statusBox.textContent = '❌ Error: ' + (data.errors?.[0]?.message || 'Failed to send.');
+          statusBox.className = 'status error';
+        }
+      } catch (err) {
+        statusBox.textContent = '❌ Error: ' + err.message;
+        statusBox.className = 'status error';
+      } finally {
+        sendBtn.disabled = false;
+        sendBtn.innerHTML = '<span>🚀 Send Push Notification</span>';
+        statusBox.style.display = 'block';
+      }
+    });
+  </script>
+</body>
+</html>

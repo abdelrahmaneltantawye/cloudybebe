@@ -13,6 +13,7 @@ import { ShopProvider } from '@/state/shop';
 import { SessionProvider } from '@/state/session';
 import { ThemeProvider, useThemeContext } from '@/design-system';
 import { PrivacyShield } from '@/components/privacy-shield';
+import { registerForPushNotificationsAsync, setupNotificationListeners } from '@/lib/notifications';
 
 export { ErrorBoundary } from 'expo-router';
 void SplashScreen.preventAutoHideAsync();
@@ -48,6 +49,7 @@ function AppNavigation() {
         <Stack.Screen name="saved" options={{ title: 'Wishlist', headerBackTitle: 'Back' }} />
         <Stack.Screen name="checkout" options={{ title: 'Secure checkout', presentation: 'modal' }} />
         <Stack.Screen name="website" options={{ title: 'CloudyBebe', presentation: 'modal' }} />
+        <Stack.Screen name="account/notifications" options={{ title: 'Push Notifications', headerBackTitle: 'Back' }} />
       </Stack>
     </View>
   );
@@ -62,7 +64,14 @@ export default function RootLayout() {
   });
 
   useEffect(() => {
-    if (loaded || error) void SplashScreen.hideAsync();
+    if (loaded || error) {
+      void SplashScreen.hideAsync();
+      void registerForPushNotificationsAsync();
+    }
+    const cleanup = setupNotificationListeners();
+    return () => {
+      cleanup();
+    };
   }, [loaded, error]);
 
   if (!loaded && !error) return null;

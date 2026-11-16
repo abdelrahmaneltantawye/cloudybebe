@@ -74,6 +74,13 @@
         {
           "faceIDPermission": "Allow CloudyBebe to use Face ID for secure authentication."
         }
+      ],
+      [
+        "expo-notifications",
+        {
+          "icon": "./assets/images/cloudybebe-mark.png",
+          "color": "#76867A"
+        }
       ]
     ],
     "experiments": {

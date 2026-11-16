@@ -6,8 +6,9 @@ import { StoreBrowser } from '@/components/store-browser';
 import { Button, Copy, Status, Title } from '@/components/ui';
 import { validateTicket, receiptConfirmed, isCheckoutReturn, type CheckoutTicket, type CheckoutReceipt, type PendingCheckout } from '@/lib/checkout';
 import { checkoutItems } from '@/lib/bag';
-import { mobileRequest, errorMessage } from '@/lib/mobile-api';
+import { mobileRequest, errorMessage, formatAmount } from '@/lib/mobile-api';
 import { readCheckout, saveCheckout, clearCheckout } from '@/lib/pending-checkout';
+import { notifyOrderConfirmed } from '@/lib/notifications';
 import { useShop } from '@/state/shop';
 import { useSession } from '@/state/session';
 import { theme as t } from '@/theme';
@@ -58,6 +59,10 @@ export default function Checkout() {
         await removePurchased(value.snapshot, value.ticket.checkout_id);
         setShowStore(false);
         await clearCheckout();
+        void notifyOrderConfirmed(
+          result.order_number || String(result.order_id),
+          formatAmount(result.total || '', result.currency || 'USD')
+        );
       }
       return result;
     } catch (failure) {

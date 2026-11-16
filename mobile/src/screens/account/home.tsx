@@ -21,6 +21,7 @@ function AccountDetails() {
     <Row label="Personal details" detail="Name and email address" icon="person-outline" onPress={() => router.push('/account/profile')} />
     <Row label="My addresses" detail="Delivery and billing details" icon="location-outline" onPress={() => router.push('/account/addresses')} />
     <Row label="Account settings" detail="Password, privacy and account deletion" icon="settings-outline" onPress={() => router.push('/account/settings')} />
+    <Row label="Push Notifications" detail="Send alerts and marketing updates" icon="notifications-outline" onPress={() => router.push('/account/notifications' as Href)} />
     <Row label="Help & contact" icon="chatbubble-ellipses-outline" onPress={() => router.push('/account/help' as Href)} />
     <Button label={pending ? 'Signing out…' : 'Sign out'} secondary disabled={pending} onPress={() => void signOut()} />
   </Page>;

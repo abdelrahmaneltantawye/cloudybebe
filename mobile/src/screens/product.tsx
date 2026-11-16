@@ -11,6 +11,7 @@ import { type Product, money, plainText, storeGet } from '@/lib/store';
 import { useShop } from '@/state/shop';
 import { clampQuantity } from '@/lib/bag';
 import { useTheme } from '@/design-system';
+import { useSession } from '@/state/session';
 import { haptic } from '@/lib/haptics';
 
 const normalized = (value: string) => plainText(value).trim().toLowerCase();
@@ -25,6 +26,7 @@ export default function ProductScreen() {
 function ProductDetails({ product: p }: { product: Product }) {
   const t = useTheme();
   const shop = useShop();
+  const session = useSession();
   const insets = useSafeAreaInsets();
   const [selected, setSelected] = useState<Record<string, string>>({});
   const [requestedQuantity, setQuantity] = useState(p.add_to_cart.minimum || 1);
@@ -345,22 +347,108 @@ function ProductDetails({ product: p }: { product: Product }) {
           {purchaseQuantity} {purchaseQuantity === 1 ? 'item' : 'items'} added to your bag.
         </Copy>
       ) : null}
+
+      {/* Buy Now Express Button */}
+      <View style={{ gap: 6, paddingBottom: t.space.sm }}>
+        <Pressable
+          accessibilityRole="button"
+          accessibilityLabel="Buy Now"
+          disabled={!shop.ready || !isReady}
+          onPress={() => {
+            if (purchaseProduct) {
+              const message = shop.add(purchaseProduct, purchaseQuantity);
+              if (!message) {
+                haptic.selection();
+                router.push('/checkout');
+              } else {
+                setBagError(message);
+              }
+            }
+          }}
+          style={({ pressed }) => ({
+            backgroundColor: '#1E1E22',
+            paddingVertical: 14,
+            paddingHorizontal: t.space.lg,
+            borderRadius: t.radius.sm,
+            alignItems: 'center',
+            justifyContent: 'center',
+            flexDirection: 'row',
+            gap: 8,
+            opacity: !shop.ready || !isReady ? 0.45 : pressed ? 0.8 : 1,
+            shadowColor: '#000',
+            shadowOffset: { width: 0, height: 2 },
+            shadowOpacity: 0.15,
+            shadowRadius: 4,
+          })}
+        >
+          <Ionicons name="flash" size={17} color="#F5C518" />
+          <Copy style={{ color: '#FFFFFF', fontFamily: t.font.strong, fontSize: 16 }}>
+            Buy Now
+          </Copy>
+        </Pressable>
+        <View style={{ flexDirection: 'row', alignItems: 'center', justifyContent: 'center', gap: 6 }}>
+          <Ionicons name="lock-closed" size={12} color={t.colors.muted} />
+          <Copy style={{ fontSize: 11, color: t.colors.muted }}>
+            Express checkout with Apple Pay, PayPal & Cards
+          </Copy>
+        </View>
+      </View>
+
+      {/* Baby Registry Action */}
       <View style={{ gap: t.space.sm, paddingBottom: t.space.md }}>
-        <Button
-          label="Add to Baby Registry"
-          secondary
-          disabled={!shop.ready || !isReady || wildcardVariation}
-          onPress={() =>
-            router.push({
-              pathname: '/registry/add',
-              params: {
-                productId: String(p.parent || p.id),
-                ...(chosen?.parent ? { variationId: String(chosen.id) } : {}),
-                quantity: String(purchaseQuantity),
-              },
-            })
-          }
-        />
+        {session.token ? (
+          <Pressable
+            accessibilityRole="button"
+            disabled={!shop.ready || !isReady || wildcardVariation}
+            onPress={() =>
+              router.push({
+                pathname: '/registry/add',
+                params: {
+                  productId: String(p.parent || p.id),
+                  ...(chosen?.parent ? { variationId: String(chosen.id) } : {}),
+                  quantity: String(purchaseQuantity),
+                },
+              })
+            }
+            style={({ pressed }) => ({
+              flexDirection: 'row',
+              alignItems: 'center',
+              justifyContent: 'space-between',
+              paddingHorizontal: t.space.lg,
+              paddingVertical: 14,
+              borderRadius: t.radius.sm,
+              borderWidth: 1.5,
+              borderColor: t.colors.primary,
+              backgroundColor: t.colors.primarySoft,
+              opacity: !shop.ready || !isReady || wildcardVariation ? 0.45 : pressed ? 0.8 : 1,
+            })}
+          >
+            <View style={{ flexDirection: 'row', alignItems: 'center', gap: 10 }}>
+              <Ionicons name="gift" size={20} color={t.colors.primary} />
+              <Copy style={{ fontFamily: t.font.strong, color: t.colors.primary, fontSize: 15 }}>
+                Add to Baby Registry
+              </Copy>
+            </View>
+            <Ionicons name="chevron-forward" size={16} color={t.colors.primary} />
+          </Pressable>
+        ) : (
+          <Pressable
+            accessibilityRole="button"
+            onPress={() => router.push(`/account/sign-in?returnTo=${encodeURIComponent(`/product/${p.id}`)}` as any)}
+            style={{
+              flexDirection: 'row',
+              alignItems: 'center',
+              justifyContent: 'center',
+              paddingVertical: 10,
+              gap: 6,
+            }}
+          >
+            <Ionicons name="gift-outline" size={16} color={t.colors.muted} />
+            <Copy style={{ fontSize: 13, color: t.colors.muted, textDecorationLine: 'underline' }}>
+              Sign in to add this gift to your Baby Registry
+            </Copy>
+          </Pressable>
+        )}
         {wildcardVariation ? (
           <Copy style={{ color: t.colors.muted, fontSize: t.type.caption, lineHeight: 20 }}>
             These product options cannot be saved to a registry yet. You can still add this item to your bag.
