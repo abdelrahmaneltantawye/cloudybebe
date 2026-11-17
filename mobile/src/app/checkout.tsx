@@ -8,7 +8,7 @@ import {
   View,
 } from 'react-native';
 import { Image } from 'expo-image';
-import { router } from 'expo-router';
+import { router, useLocalSearchParams } from 'expo-router';
 import Ionicons from '@expo/vector-icons/Ionicons';
 import { Button, Copy, Title } from '@/components/ui';
 import { useShop } from '@/state/shop';
@@ -22,6 +22,8 @@ export default function NativeCheckout() {
   const t = useTheme();
   const shop = useShop();
   const session = useSession();
+  const params = useLocalSearchParams<{ method?: string }>();
+  const initialMethod = (params.method === 'apple_pay' || params.method === 'paypal') ? params.method : 'card';
 
   // Contact & Address
   const [email, setEmail] = useState(() => session.user?.email || '');
@@ -35,7 +37,7 @@ export default function NativeCheckout() {
   const [zipCode, setZipCode] = useState('');
 
   // Payment Method
-  const [paymentMethod, setPaymentMethod] = useState<'card' | 'apple_pay' | 'paypal'>('card');
+  const [paymentMethod, setPaymentMethod] = useState<'card' | 'apple_pay' | 'paypal'>(initialMethod);
   const [cardNumber, setCardNumber] = useState('');
   const [cardExpiry, setCardExpiry] = useState('');
   const [cardCvc, setCardCvc] = useState('');
@@ -242,12 +244,12 @@ export default function NativeCheckout() {
     );
   }
 
-  // Empty Bag Check
+  // Empty Cart Check
   if (items.length === 0) {
     return (
       <View style={{ flex: 1, justifyContent: 'center', alignItems: 'center', padding: t.space.xl, gap: t.space.lg }}>
-        <Ionicons name="bag-handle-outline" size={56} color={t.colors.muted} />
-        <Title>Your bag is empty</Title>
+        <Ionicons name="cart-outline" size={56} color={t.colors.muted} />
+        <Title>Your cart is empty</Title>
         <Copy style={{ color: t.colors.muted, textAlign: 'center' }}>
           Explore our collection of nursery blankets, plush toys and baby essentials.
         </Copy>

@@ -9,7 +9,7 @@ import { haptics } from '@/lib/haptics';
 const TABS = [
   { name: 'index', title: 'Shop', activeIcon: 'storefront', inactiveIcon: 'storefront-outline' },
   { name: 'wishlist', title: 'Wishlist', activeIcon: 'heart', inactiveIcon: 'heart-outline' },
-  { name: 'bag', title: 'Cart', activeIcon: 'bag-handle', inactiveIcon: 'bag-handle-outline' },
+  { name: 'bag', title: 'Cart', activeIcon: 'cart', inactiveIcon: 'cart-outline' },
   { name: 'account', title: 'My account', activeIcon: 'person', inactiveIcon: 'person-outline' },
 ] as const;
 

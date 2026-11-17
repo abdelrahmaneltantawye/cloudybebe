@@ -313,12 +313,12 @@ function ProductDetails({ product: p }: { product: Product }) {
         <Button
           label={
             added
-              ? 'View bag  →'
+              ? 'View Cart  →'
               : chosen && !chosen.is_in_stock
               ? 'Out of stock'
               : !chosen && p.has_options
               ? 'Choose options above'
-              : 'Add to bag'
+              : 'Add to Cart'
           }
           disabled={!shop.ready || !isReady}
           onPress={() => {
@@ -344,12 +344,12 @@ function ProductDetails({ product: p }: { product: Product }) {
       ) : null}
       {added ? (
         <Copy accessibilityLiveRegion="polite" style={{ color: t.colors.primary, fontSize: t.type.small, paddingBottom: t.space.sm }}>
-          {purchaseQuantity} {purchaseQuantity === 1 ? 'item' : 'items'} added to your bag.
+          {purchaseQuantity} {purchaseQuantity === 1 ? 'item' : 'items'} added to your cart.
         </Copy>
       ) : null}
 
       {/* Buy Now Express Button */}
-      <View style={{ gap: 6, paddingBottom: t.space.sm }}>
+      <View style={{ gap: 6, paddingBottom: t.space.xs }}>
         <Pressable
           accessibilityRole="button"
           accessibilityLabel="Buy Now"
@@ -386,11 +386,88 @@ function ProductDetails({ product: p }: { product: Product }) {
             Buy Now
           </Copy>
         </Pressable>
-        <View style={{ flexDirection: 'row', alignItems: 'center', justifyContent: 'center', gap: 6 }}>
-          <Ionicons name="lock-closed" size={12} color={t.colors.muted} />
-          <Copy style={{ fontSize: 11, color: t.colors.muted }}>
-            Express checkout with Apple Pay, PayPal & Cards
+      </View>
+
+      {/* Express Checkout Wallets (Apple Pay & PayPal) */}
+      <View style={{ gap: 8, paddingBottom: t.space.md }}>
+        <View style={{ flexDirection: 'row', alignItems: 'center', gap: 10 }}>
+          <View style={{ flex: 1, height: 1, backgroundColor: t.colors.border }} />
+          <Copy style={{ fontSize: 11, color: t.colors.muted, textTransform: 'uppercase', letterSpacing: 0.5 }}>
+            Or express checkout with
           </Copy>
+          <View style={{ flex: 1, height: 1, backgroundColor: t.colors.border }} />
+        </View>
+
+        <View style={{ flexDirection: 'row', gap: 10 }}>
+          {/* Apple Pay Button */}
+          <Pressable
+            accessibilityRole="button"
+            accessibilityLabel="Express checkout with Apple Pay"
+            disabled={!shop.ready || !isReady}
+            onPress={() => {
+              if (purchaseProduct) {
+                const message = shop.add(purchaseProduct, purchaseQuantity);
+                if (!message) {
+                  haptic.selection();
+                  router.push({ pathname: '/checkout', params: { method: 'apple_pay' } });
+                } else {
+                  setBagError(message);
+                }
+              }
+            }}
+            style={({ pressed }) => ({
+              flex: 1,
+              backgroundColor: '#000000',
+              paddingVertical: 13,
+              borderRadius: t.radius.sm,
+              alignItems: 'center',
+              justifyContent: 'center',
+              flexDirection: 'row',
+              gap: 6,
+              borderWidth: 1,
+              borderColor: '#2C2C2E',
+              opacity: !shop.ready || !isReady ? 0.45 : pressed ? 0.8 : 1,
+            })}
+          >
+            <Ionicons name="logo-apple" size={19} color="#FFFFFF" />
+            <Copy style={{ color: '#FFFFFF', fontFamily: t.font.strong, fontSize: 16, fontWeight: '700' }}>
+              Pay
+            </Copy>
+          </Pressable>
+
+          {/* PayPal Button */}
+          <Pressable
+            accessibilityRole="button"
+            accessibilityLabel="Express checkout with PayPal"
+            disabled={!shop.ready || !isReady}
+            onPress={() => {
+              if (purchaseProduct) {
+                const message = shop.add(purchaseProduct, purchaseQuantity);
+                if (!message) {
+                  haptic.selection();
+                  router.push({ pathname: '/checkout', params: { method: 'paypal' } });
+                } else {
+                  setBagError(message);
+                }
+              }
+            }}
+            style={({ pressed }) => ({
+              flex: 1,
+              backgroundColor: '#FFC439',
+              paddingVertical: 13,
+              borderRadius: t.radius.sm,
+              alignItems: 'center',
+              justifyContent: 'center',
+              flexDirection: 'row',
+              gap: 6,
+              opacity: !shop.ready || !isReady ? 0.45 : pressed ? 0.8 : 1,
+            })}
+          >
+            <Ionicons name="wallet" size={17} color="#003087" />
+            <Copy style={{ color: '#003087', fontFamily: t.font.strong, fontSize: 16, fontWeight: '800' }}>
+              PayPal
+            </Copy>
+          </Pressable>
         </View>
       </View>
 
@@ -451,7 +528,7 @@ function ProductDetails({ product: p }: { product: Product }) {
         )}
         {wildcardVariation ? (
           <Copy style={{ color: t.colors.muted, fontSize: t.type.caption, lineHeight: 20 }}>
-            These product options cannot be saved to a registry yet. You can still add this item to your bag.
+            These product options cannot be saved to a registry yet. You can still add this item to your cart.
           </Copy>
         ) : null}
         <Pressable
@@ -620,12 +697,12 @@ function ProductDetails({ product: p }: { product: Product }) {
             }}
           >
             {added
-              ? 'View bag →'
+              ? 'View Cart →'
               : !chosen && p.has_options
               ? 'Select options'
               : chosen && !chosen.is_in_stock
               ? 'Out of stock'
-              : 'Add to bag'}
+              : 'Add to Cart'}
           </Copy>
         </Pressable>
       </Animated.View>

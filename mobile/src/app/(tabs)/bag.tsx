@@ -143,7 +143,7 @@ export default function Bag() {
               />
               <Pressable
                 accessibilityRole="button"
-                accessibilityLabel={`Remove ${plainText(item.product.name)} from bag`}
+                accessibilityLabel={`Remove ${plainText(item.product.name)} from cart`}
                 onPress={() => {
                   haptic.medium();
                   shop.quantity(item.key, 0);
@@ -161,10 +161,10 @@ export default function Bag() {
       ListEmptyComponent={
         shop.ready ? (
           <View style={{ gap: t.space.lg, paddingVertical: t.space.xxl, alignItems: 'center' }}>
-            <Ionicons name="bag-outline" size={44} color={t.colors.primary} />
+            <Ionicons name="cart-outline" size={44} color={t.colors.primary} />
             <Title style={{ fontSize: 22, textAlign: 'center' }}>A little room for lovely things.</Title>
             <Copy style={{ color: t.colors.muted, textAlign: 'center' }}>
-              Your bag is empty. Find a soft companion, a thoughtful gift or an everyday favourite.
+              Your cart is empty. Find a soft companion, a thoughtful gift or an everyday favourite.
             </Copy>
             <Button label="Explore the collection" onPress={() => router.push('/shop')} />
           </View>
@@ -193,6 +193,74 @@ export default function Bag() {
               </Copy>
             </View>
             <Button label="Continue to checkout  →" onPress={() => router.push('/checkout')} />
+
+            {/* Express Checkout Wallets */}
+            <View style={{ gap: 8 }}>
+              <View style={{ flexDirection: 'row', alignItems: 'center', gap: 10 }}>
+                <View style={{ flex: 1, height: 1, backgroundColor: t.colors.border }} />
+                <Copy style={{ fontSize: 11, color: t.colors.muted, textTransform: 'uppercase', letterSpacing: 0.5 }}>
+                  Or express checkout with
+                </Copy>
+                <View style={{ flex: 1, height: 1, backgroundColor: t.colors.border }} />
+              </View>
+
+              <View style={{ flexDirection: 'row', gap: 10 }}>
+                {/* Apple Pay Button */}
+                <Pressable
+                  accessibilityRole="button"
+                  accessibilityLabel="Express checkout with Apple Pay"
+                  onPress={() => {
+                    haptic.selection();
+                    router.push({ pathname: '/checkout', params: { method: 'apple_pay' } });
+                  }}
+                  style={({ pressed }) => ({
+                    flex: 1,
+                    backgroundColor: '#000000',
+                    paddingVertical: 13,
+                    borderRadius: t.radius.sm,
+                    alignItems: 'center',
+                    justifyContent: 'center',
+                    flexDirection: 'row',
+                    gap: 6,
+                    borderWidth: 1,
+                    borderColor: '#2C2C2E',
+                    opacity: pressed ? 0.8 : 1,
+                  })}
+                >
+                  <Ionicons name="logo-apple" size={19} color="#FFFFFF" />
+                  <Copy style={{ color: '#FFFFFF', fontFamily: t.font.strong, fontSize: 16, fontWeight: '700' }}>
+                    Pay
+                  </Copy>
+                </Pressable>
+
+                {/* PayPal Button */}
+                <Pressable
+                  accessibilityRole="button"
+                  accessibilityLabel="Express checkout with PayPal"
+                  onPress={() => {
+                    haptic.selection();
+                    router.push({ pathname: '/checkout', params: { method: 'paypal' } });
+                  }}
+                  style={({ pressed }) => ({
+                    flex: 1,
+                    backgroundColor: '#FFC439',
+                    paddingVertical: 13,
+                    borderRadius: t.radius.sm,
+                    alignItems: 'center',
+                    justifyContent: 'center',
+                    flexDirection: 'row',
+                    gap: 6,
+                    opacity: pressed ? 0.8 : 1,
+                  })}
+                >
+                  <Ionicons name="wallet" size={17} color="#003087" />
+                  <Copy style={{ color: '#003087', fontFamily: t.font.strong, fontSize: 16, fontWeight: '800' }}>
+                    PayPal
+                  </Copy>
+                </Pressable>
+              </View>
+            </View>
+
             <View style={{ flexDirection: 'row', gap: t.space.sm, alignItems: 'center', justifyContent: 'center' }}>
               <Ionicons name="lock-closed-outline" size={15} color={t.colors.muted} />
               <Copy style={{ fontSize: t.type.caption, color: t.colors.muted }}>Secure checkout with CloudyBebe</Copy>
@@ -210,7 +278,7 @@ export default function Bag() {
               <View style={{ flex: 1, gap: t.space.xs }}>
                 <Copy style={{ fontFamily: t.font.strong, fontSize: t.type.small }}>Little things, thoughtfully chosen.</Copy>
                 <Copy style={{ fontSize: t.type.caption, color: t.colors.muted, lineHeight: 20 }}>
-                  Review your delivery details and payment on our website, right inside the app.
+                  Fast & secure native checkout with Apple Pay, PayPal and cards.
                 </Copy>
               </View>
             </View>
