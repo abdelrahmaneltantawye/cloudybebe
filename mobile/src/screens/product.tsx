@@ -213,7 +213,11 @@ function ProductDetails({ product: p }: { product: Product }) {
           {plainText(p.categories[0]?.name || 'CLOUDYBEBE').toUpperCase()}
         </Copy>
         <Title style={{ fontSize: 25, lineHeight: 33 }}>{plainText(p.name)}</Title>
-        {p.brands?.[0] ? <Copy style={{ color: t.colors.muted, fontSize: t.type.small }}>By {plainText(p.brands[0].name)}</Copy> : null}
+        {p.categories[0] ? (
+          <Copy style={{ color: t.colors.muted, fontSize: t.type.small }}>
+            {plainText(p.categories[0].name)}
+          </Copy>
+        ) : null}
         <View style={{ flexDirection: 'row', gap: t.space.md, alignItems: 'center' }}>
           <Copy selectable style={{ fontFamily: t.font.strong, fontSize: 27, lineHeight: 36, color: t.colors.primary, fontVariant: ['tabular-nums'] }}>
             {p.has_options && !chosen ? 'From ' : ''}
