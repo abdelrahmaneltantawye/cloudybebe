@@ -176,6 +176,10 @@ export default function NativeCheckout() {
     if (!email.trim() || !email.includes('@')) {
       errs.email = 'Please enter a valid email address.';
     }
+    const cleanPhone = phone.replace(/\D/g, '');
+    if (!cleanPhone || cleanPhone.length < 10) {
+      errs.phone = 'Please enter a valid 10-digit US phone number.';
+    }
     if (!firstName.trim()) {
       errs.firstName = 'First name is required.';
     }
@@ -411,24 +415,30 @@ export default function NativeCheckout() {
             ) : null}
           </View>
           <View style={{ gap: 6 }}>
-            <Copy style={{ fontSize: 13, fontFamily: t.font.strong }}>Phone Number</Copy>
+            <View style={{ flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center' }}>
+              <Copy style={{ fontSize: 13, fontFamily: t.font.strong }}>Phone Number *</Copy>
+              <Copy style={{ fontSize: 11, color: t.colors.muted }}>For delivery updates only</Copy>
+            </View>
             <TextInput
               value={phone}
-              onChangeText={setPhone}
+              onChangeText={v => { setPhone(v); clearFieldError('phone'); }}
               placeholder="(307) 555-0199"
               placeholderTextColor={t.colors.muted}
               keyboardType="phone-pad"
               style={{
                 padding: 12,
                 borderRadius: t.radius.sm,
-                borderWidth: 1,
-                borderColor: t.colors.border,
-                backgroundColor: t.colors.background,
+                borderWidth: fieldErrors.phone ? 1.5 : 1,
+                borderColor: fieldErrors.phone ? t.colors.error : t.colors.border,
+                backgroundColor: fieldErrors.phone ? 'rgba(235, 87, 87, 0.05)' : t.colors.background,
                 color: t.colors.ink,
                 fontSize: 15,
                 fontFamily: t.font.body,
               }}
             />
+            {fieldErrors.phone ? (
+              <Copy style={{ color: t.colors.error, fontSize: 12, marginTop: 2 }}>{fieldErrors.phone}</Copy>
+            ) : null}
           </View>
         </View>
 
